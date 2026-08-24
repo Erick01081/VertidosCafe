@@ -1,0 +1,39 @@
+:root { --ink:#211b17; --muted:#7d7168; --paper:#f3eee6; --card:#fbf9f5; --line:#ded6cc; --coffee:#72543c; --orange:#d47442; --cream:#f2dfc4; }
+* { box-sizing:border-box; }
+body { margin:0; min-height:100vh; color:var(--ink); background:radial-gradient(circle at 83% 17%, #f0dabe 0 8%, transparent 26%), var(--paper); font-family:"DM Sans", sans-serif; }
+body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.24; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.24'/%3E%3C/svg%3E"); }
+.shell { width:min(1120px, calc(100% - 48px)); margin:auto; position:relative; padding:27px 0 35px; }
+.topbar { height:48px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(33,27,23,.16); }
+.brand { color:var(--ink); text-decoration:none; font-family:"Playfair Display", serif; font-size:22px; letter-spacing:-.04em; display:flex; align-items:center; gap:8px; }
+.brand-mark { width:25px; height:25px; display:grid; place-items:center; border-radius:50%; background:var(--ink); color:#fff; font-size:16px; font-style:italic; }
+.eyebrow,.kicker,.section-label,.small-note,.footer-note { text-transform:uppercase; letter-spacing:.12em; font-size:10px; font-weight:600; }
+.eyebrow { color:var(--muted); }
+.hero { padding:78px 0 54px; max-width:680px; }
+.kicker { margin:0 0 14px; color:var(--orange); }
+h1,h2,p { margin-top:0; } h1 { font:500 clamp(48px, 7vw, 78px)/.98 "Playfair Display", serif; letter-spacing:-.055em; margin-bottom:22px; } h1 em { color:var(--coffee); }
+.intro { max-width:440px; color:var(--muted); line-height:1.55; font-size:16px; }
+.workspace { display:grid; grid-template-columns: minmax(270px, .83fr) minmax(390px, 1.17fr); gap:18px; align-items:stretch; }
+.recipe-card,.result-card { border:1px solid var(--line); border-radius:18px; overflow:hidden; }
+.recipe-card { background:rgba(251,249,245,.73); padding:26px; }
+.form-heading,.result-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.section-label { color:var(--orange); margin-bottom:0; } .small-note { margin:0; color:var(--muted); font-weight:500; text-transform:none; letter-spacing:0; }
+.field { display:flex; justify-content:space-between; align-items:center; padding:21px 0 17px; border-bottom:1px solid var(--line); font-size:14px; font-weight:500; }
+.input-wrap { display:flex; align-items:center; gap:7px; color:var(--muted); font-family:"DM Mono", monospace; font-size:13px; }
+input[type=number] { width:53px; padding:5px 0; color:var(--ink); border:0; border-bottom:1px solid transparent; outline:0; background:transparent; font:500 18px "DM Mono", monospace; text-align:right; transition:border .2s; }
+input[type=number]:focus { border-bottom-color:var(--orange); } .ratio-wrap i { font-style:normal; color:var(--muted); } .ratio-wrap input { text-align:left; }
+input::-webkit-inner-spin-button,input::-webkit-outer-spin-button { opacity:.45; }
+.bloom-field { border:0; padding:20px 0 0; margin:0; } .bloom-field legend { font-size:14px; font-weight:500; padding:0 0 13px; }
+.segmented { display:grid; grid-template-columns:1fr 1fr; gap:8px; } .segmented label { cursor:pointer; } .segmented input { position:absolute; opacity:0; pointer-events:none; }
+.segmented span { display:block; padding:11px; text-align:center; border:1px solid var(--line); border-radius:8px; color:var(--muted); font:500 13px "DM Mono", monospace; transition:.2s; }
+.segmented input:checked + span { color:#fff; background:var(--coffee); border-color:var(--coffee); }
+.result-card { color:#f9f4ec; background:var(--ink); display:flex; flex-direction:column; padding:28px 30px 20px; box-shadow:0 19px 45px rgba(70,47,31,.13); }
+.result-top { margin-bottom:19px; } .result-card .section-label { color:#e3a474; } h2 { font:500 31px/1 "Playfair Display", serif; letter-spacing:-.04em; margin:7px 0 0; }
+.total { text-align:right; } .total span { display:block; color:#bdb0a4; font-size:11px; margin-bottom:3px; } .total strong { font:500 29px "DM Mono", monospace; letter-spacing:-.07em; } .total small { font-size:12px; letter-spacing:0; color:#bdb0a4; }
+.pour-list { flex:1; border-top:1px solid rgba(255,255,255,.17); }
+.pour { min-height:47px; display:grid; grid-template-columns:60px 1fr auto; align-items:center; border-bottom:1px solid rgba(255,255,255,.12); animation:appear .35s both; }
+.pour-tag { color:#bba99a; font:500 10px "DM Mono", monospace; text-transform:uppercase; } .pour-name { font-size:13px; color:#d7cbc1; } .pour-amount { font:500 21px "DM Mono", monospace; letter-spacing:-.06em; } .pour-amount small { color:#bba99a; letter-spacing:0; font-size:10px; }
+.pour:first-child .pour-name { color:#f0c79f; } .pour:first-child .pour-amount { color:#f2b77d; }
+.result-footer { padding-top:17px; display:flex; justify-content:space-between; font:10px "DM Mono", monospace; color:#a99c92; } .tip-dot::before { content:""; display:inline-block; width:5px; height:5px; border-radius:50%; background:#d47442; margin:0 6px 1px 0; }
+.footer-note { color:var(--muted); margin:30px 0 0; font-weight:500; }
+@keyframes appear { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+@media (max-width:720px) { .shell { width:min(100% - 32px, 520px); } .hero { padding:52px 0 37px; } .workspace { grid-template-columns:1fr; } .result-card { min-height:390px; } .eyebrow { display:none; } .result-footer { gap:12px; flex-wrap:wrap; } }
