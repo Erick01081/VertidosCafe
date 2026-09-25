@@ -55,7 +55,7 @@ const photoInput = document.querySelector('#label-photo');
 const ocrStatus = document.querySelector('#ocr-status');
 const coffeeSelect = document.querySelector('#brew-coffee');
 const history = document.querySelector('#brew-history');
-const fieldIds = ['name', 'variety', 'region', 'farm', 'process', 'notes'];
+const fieldIds = ['name', 'roaster', 'variety', 'region', 'farm', 'process', 'notes'];
 const valueOf = (key) => document.querySelector(`#coffee-${key}`).value.trim();
 const escapeHTML = (value = '') => String(value).replace(/[&<>"']/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
 
@@ -68,7 +68,7 @@ function refreshNotebook() {
   document.querySelector('#history-count').textContent = `${notebook.brews.length} preparación${notebook.brews.length === 1 ? '' : 'es'}`;
   history.innerHTML = notebook.brews.length ? notebook.brews.map((brew) => {
     const coffee = notebook.coffees.find((item) => item.id === brew.coffeeId);
-    return `<article class="brew-entry"><div class="brew-entry-top"><div><p class="entry-date">${escapeHTML(brew.date)}</p><h4>${escapeHTML(coffee?.name || 'Café')}</h4></div><span class="dripper-chip">${escapeHTML(brew.dripper)}</span></div><p class="entry-meta">${escapeHTML(coffee?.region || '')}${coffee?.variety ? ` · ${escapeHTML(coffee.variety)}` : ''}</p><p class="entry-recipe">${escapeHTML(brew.recipe)} · ${escapeHTML(brew.grind || 'Molienda sin registrar')}${brew.temperature ? ` · ${escapeHTML(brew.temperature)} °C` : ''}</p>${brew.notes ? `<p class="entry-notes">“${escapeHTML(brew.notes)}”</p>` : ''}</article>`;
+    return `<article class="brew-entry"><div class="brew-entry-top"><div><p class="entry-date">${escapeHTML(brew.date)}</p><h4>${escapeHTML(coffee?.name || 'Café')}</h4></div><span class="dripper-chip">${escapeHTML(brew.dripper)}</span></div><p class="entry-meta">${escapeHTML([coffee?.roaster, coffee?.region, coffee?.variety].filter(Boolean).join(' · '))}</p><p class="entry-recipe">${escapeHTML(brew.recipe)} · ${escapeHTML(brew.grind || 'Molienda sin registrar')}${brew.temperature ? ` · ${escapeHTML(brew.temperature)} °C` : ''}</p>${brew.notes ? `<p class="entry-notes">“${escapeHTML(brew.notes)}”</p>` : ''}</article>`;
   }).join('') : '<p class="empty-state">Tus preparaciones aparecerán aquí.</p>';
 }
 
@@ -94,7 +94,11 @@ photoInput.addEventListener('change', async () => {
     const result = await Tesseract.recognize(file, 'spa+eng');
     const text = result.data.text;
     const lines = text.split('\n').map((line) => line.trim()).filter(Boolean);
-    // Use label cues where possible and the first useful line as a name suggestion.
+    const normalized = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const cleanLine = (line) => line.replace(/[|•#]/g, ' ').replace(/\s+/g, ' ').trim();
+    const usableLines = lines.map(cleanLine).filter((line) => line.length > 2);
+    const allText = normalized(usableLines.join('\n'));
+    // Some roasters print values as headings without field names. Try explicit cues first.
     const patterns = [
       ['variety', /(?:variedad|variety|cultivar)\s*[:\-]?\s*(.+)/i],
       ['region', /(?:regi[oó]n|region|origen|origin|municipio)\s*[:\-]?\s*(.+)/i],
@@ -106,8 +110,41 @@ photoInput.addEventListener('change', async () => {
       const match = text.match(pattern);
       if (match?.[1]) document.querySelector(`#coffee-${key}`).value = match[1].split('\n')[0].trim().slice(0, 120);
     }
-    const name = lines.find((line) => line.length > 2 && !/^(variedad|variety|regi[oó]n|region|finca|farm|proceso|process)\b/i.test(line));
-    if (name && !valueOf('name')) document.querySelector('#coffee-name').value = name.slice(0, 80);
+    const varietyNames = ['sudan rume', 'red bourbon', 'pink bourbon', 'yellow bourbon', 'castillo', 'pacamara', 'maragesha', 'gesha', 'geisha', 'caturra', 'typica', 'chiroso', 'tabi'];
+    const variety = varietyNames.find((candidate) => allText.includes(candidate.trim()));
+    if (variety && !valueOf('variety')) document.querySelector('#coffee-variety').value = variety.trim().replace(/\b\w/g, (letter) => letter.toUpperCase());
+    const processTerms = ['anaerobic natural', 'anaerobico natural', 'anaerobic', 'anaerobico', 'washed', 'lavado', 'natural', 'honey', 'miel', 'fermentado'];
+    const process = processTerms.find((candidate) => allText.includes(candidate));
+    if (process && !valueOf('process')) document.querySelector('#coffee-process').value = process.replace(/\b\w/g, (letter) => letter.toUpperCase());
+    const regionTerms = ['huila', 'narino', 'risaralda', 'cauca', 'tolima', 'quindio', 'caldas', 'santander', 'pichincha', 'antioquia', 'acevedo', 'pitalito', 'buesaco', 'bruselas', 'el bolio'];
+    const locationLine = usableLines.find((line) => regionTerms.some((term) => normalized(line).includes(term)));
+    if (locationLine && !valueOf('region')) document.querySelector('#coffee-region').value = locationLine.slice(0, 120);
+    const altitude = usableLines.find((line) => /\b\d{3,4}\s*(?:m\s*.?\s*s\s*.?\s*n\s*.?\s*m\s*\.?|msnm)\b/i.test(line));
+    if (locationLine && altitude && !normalized(locationLine).includes('msnm')) document.querySelector('#coffee-region').value = `${locationLine} · ${altitude}`.slice(0, 120);
+    const roasterLine = usableLines.find((line) => /\b(cafe|coffee)\b/i.test(line));
+    if (roasterLine && !valueOf('roaster')) document.querySelector('#coffee-roaster').value = roasterLine.slice(0, 80);
+    const producerMatch = text.match(/#\s*([^\n]+)/);
+    const producerLine = producerMatch?.[1]?.trim() || usableLines.find((line) => /(?:productor|producer|cultivado por)\s*[:\-]?/i.test(line));
+    if (producerLine && !valueOf('farm')) document.querySelector('#coffee-farm').value = producerLine.replace(/^(?:productor|producer)\s*[:\-]?\s*/i, '').slice(0, 100);
+    const farmCue = usableLines.find((line) => /\b(finca|farm|hacienda)\b/i.test(line));
+    if (farmCue && !valueOf('farm')) document.querySelector('#coffee-farm').value = farmCue.slice(0, 100);
+    if (!valueOf('farm') && locationLine) {
+      const locationIndex = usableLines.indexOf(locationLine);
+      const candidates = usableLines.slice(0, locationIndex).map((line) => line.replace(/\b\d{3,4}\s*(?:m\s*\.?\s*s\s*\.?\s*n\s*\.?\s*m\s*\.?|msnm)\b/i, '').trim()).filter((line) => {
+        const normalizedLine = normalized(line);
+        return line.length > 2 && !/\b(msnm|m\.s\.n\.m|cafe|coffee|drop\s+\d+)\b/i.test(line)
+          && !varietyNames.some((item) => normalizedLine.includes(item.trim()))
+          && !processTerms.some((item) => normalizedLine.includes(item))
+          && !/\b(limon|limoncillo|toronja|cardamomo|canela|anis|cereza|frambuesa|cacao|chocolate|floral|afrutado|frutal|panela|durazno)\b/i.test(line);
+      });
+      if (candidates.length) document.querySelector('#coffee-farm').value = candidates[candidates.length - 1].slice(0, 100);
+    }
+    const tastingCue = text.match(/(?:perfil|notas? de cata|tasting notes)\s*[:\-]?\s*([^\n]+)/i);
+    const fruitLine = usableLines.find((line) => /\b(limon|limoncillo|toronja|cardamomo|canela|anis|cereza|frambuesa|cacao|chocolate|floral|afrutado|frutal|panela|durazno)\b/i.test(line));
+    if (!valueOf('notes') && (tastingCue?.[1] || fruitLine)) document.querySelector('#coffee-notes').value = (tastingCue?.[1] || fruitLine).slice(0, 140);
+    const ignored = /^(variedad|variety|regi[oó]n|region|finca|farm|proceso|process|natural|washed|lavado|soare|lohas|cafe|coffee|drop\s+\d+)/i;
+    const name = usableLines.find((line) => line.length > 2 && !ignored.test(line) && !/\b(msnm|m\.s\.n\.m)\b/i.test(line));
+    if (name && !valueOf('name')) document.querySelector('#coffee-name').value = variety ? variety.trim().replace(/\b\w/g, (letter) => letter.toUpperCase()) : name.slice(0, 80);
     // Keep a resized thumbnail so the notebook remains within localStorage limits.
     const image = await createImageBitmap(file);
     const scale = Math.min(1, 640 / Math.max(image.width, image.height));
