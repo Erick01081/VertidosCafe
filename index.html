@@ -73,8 +73,47 @@
         </article>
       </section>
 
+      <section class="coffee-library" aria-label="Biblioteca de cafés y preparaciones">
+        <div class="library-heading">
+          <div><p class="section-label">03 — Tu biblioteca</p><h2>Cafés y preparaciones</h2></div>
+          <span class="small-note">Guardado en este dispositivo</span>
+        </div>
+        <div class="library-grid">
+          <form class="coffee-card" id="coffee-form">
+            <div class="form-heading"><p class="section-label">Ficha del café</p><span class="small-note">Sube la etiqueta para reconocerla</span></div>
+            <label class="upload-zone" for="label-photo"><span class="upload-icon">↑</span><span><strong>Elegir foto del empaque</strong><small>JPG, PNG o WEBP</small></span><input id="label-photo" type="file" accept="image/*" /></label>
+            <p class="ocr-status" id="ocr-status" aria-live="polite">El reconocimiento completa los campos como una propuesta; puedes corregirlos.</p>
+            <div class="coffee-fields">
+              <label>Nombre del café<input id="coffee-name" placeholder="Ej. El jardín" /></label>
+              <label>Variedad<input id="coffee-variety" placeholder="Ej. Caturra" /></label>
+              <label>Región<input id="coffee-region" placeholder="Ej. Huila, Colombia" /></label>
+              <label>Finca / productor<input id="coffee-farm" placeholder="Nombre de finca o productor" /></label>
+              <label>Proceso<input id="coffee-process" placeholder="Ej. Lavado" /></label>
+              <label>Notas de cata<input id="coffee-notes" placeholder="Ej. panela, durazno" /></label>
+            </div>
+            <button class="primary-button" type="submit">Guardar café</button>
+          </form>
+
+          <form class="brew-card" id="brew-form">
+            <div class="form-heading"><p class="section-label">Nueva preparación</p><span class="small-note">Registra cómo quedó</span></div>
+            <label class="select-label">Café<select id="brew-coffee"><option value="">Primero guarda un café</option></select></label>
+            <div class="brew-fields">
+              <label>Dripper<select id="dripper"><option>V60</option><option>Origami</option><option>UFO</option><option>B75</option><option>Hario Neo</option><option>Otro</option></select></label>
+              <label>Molienda<input id="grind" placeholder="Ej.  suelta, 22 clicks" /></label>
+              <label>Temperatura<input id="temperature" type="number" min="50" max="100" placeholder="92" /><small>°C</small></label>
+            </div>
+            <label class="notes-label">¿Cómo quedó? <textarea id="brew-notes" rows="3" placeholder="Describe sabor, cuerpo, qué cambiarías…"></textarea></label>
+            <button class="primary-button" type="submit">Guardar preparación</button>
+            <p class="brew-hint">Se guarda la receta actual: café, ratio, bloom y número de vertidos.</p>
+          </form>
+        </div>
+        <div class="history-heading"><h3>Historial</h3><span id="history-count">0 preparaciones</span></div>
+        <div id="brew-history" class="brew-history"><p class="empty-state">Tus preparaciones aparecerán aquí.</p></div>
+      </section>
+
       <p class="footer-note">Hecho para mañanas lentas y café bien preparado.</p>
     </main>
-    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+    <script src="app.js" defer></script>
   </body>
 </html>

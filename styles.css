@@ -35,5 +35,35 @@ input::-webkit-inner-spin-button,input::-webkit-outer-spin-button { opacity:.45;
 .pour:first-child { background:linear-gradient(90deg, rgba(212,116,66,.17), rgba(255,255,255,.03)); border-color:rgba(212,116,66,.35); } .pour:first-child .pour-name { color:#f0c79f; } .pour:first-child .pour-amount { color:#f2b77d; }
 .result-footer { padding-top:17px; display:flex; justify-content:space-between; font:10px "DM Mono", monospace; color:#a99c92; } .tip-dot::before { content:""; display:inline-block; width:5px; height:5px; border-radius:50%; background:#d47442; margin:0 6px 1px 0; }
 .footer-note { color:var(--muted); margin:30px 0 0; font-weight:500; }
+.coffee-library { margin-top:78px; }
+.library-heading,.history-heading { display:flex; justify-content:space-between; align-items:end; margin-bottom:18px; }
+.library-heading h2 { font-size:34px; margin-top:8px; }
+.library-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:stretch; }
+.coffee-card,.brew-card { background:rgba(251,249,245,.82); border:1px solid var(--line); border-radius:18px; padding:24px; }
+.coffee-card .form-heading,.brew-card .form-heading { margin-bottom:17px; gap:12px; }
+.upload-zone { min-height:82px; padding:14px 16px; border:1px dashed #bdad9d; border-radius:11px; display:flex; gap:13px; align-items:center; cursor:pointer; background:rgba(242,223,196,.24); }
+.upload-zone:hover { border-color:var(--orange); background:rgba(242,223,196,.4); }
+.upload-zone input { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+.upload-icon { display:grid; place-items:center; width:38px; height:38px; border-radius:50%; background:#eee1d2; color:var(--coffee); font:22px "DM Mono",monospace; }
+.upload-zone strong,.upload-zone small { display:block; }.upload-zone strong { font-size:13px; font-weight:600; }.upload-zone small { color:var(--muted); font-size:11px; margin-top:3px; }
+.ocr-status,.brew-hint { color:var(--muted); font-size:11px; line-height:1.5; margin:10px 0 15px; }
+.coffee-fields,.brew-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.coffee-fields label,.brew-fields label,.select-label,.notes-label { display:flex; flex-direction:column; gap:6px; color:#51463e; font-size:11px; font-weight:600; }
+.coffee-fields input,.brew-fields input,.brew-fields select,.select-label select,.notes-label textarea { width:100%; padding:10px 11px; min-width:0; border:1px solid var(--line); border-radius:8px; outline:0; color:var(--ink); background:#fffdfa; font:13px "DM Sans",sans-serif; }
+.coffee-fields input:focus,.brew-fields input:focus,.brew-fields select:focus,.select-label select:focus,.notes-label textarea:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(212,116,66,.12); }
+.primary-button { border:0; border-radius:8px; padding:12px 16px; margin-top:17px; color:#fffaf4; background:var(--coffee); font:600 12px "DM Sans",sans-serif; cursor:pointer; transition:background .2s,transform .2s; }
+.primary-button:hover { background:#5b402d; transform:translateY(-1px); }
+.brew-card { display:flex; flex-direction:column; }.select-label { margin-bottom:13px; }
+.brew-fields { grid-template-columns:1.1fr 1.4fr .8fr; }.brew-fields label { position:relative; }.brew-fields label small { position:absolute; right:11px; bottom:11px; color:var(--muted); font:11px "DM Mono",monospace; }
+.brew-fields input[type=number] { width:100%; text-align:left; padding-right:28px; font:13px "DM Sans",sans-serif; }
+.notes-label { margin-top:14px; }.notes-label textarea { resize:vertical; line-height:1.5; }
+.brew-hint { margin:10px 0 0; }.history-heading { margin:36px 0 14px; align-items:center; }.history-heading h3 { font:500 24px "Playfair Display",serif; margin:0; }.history-heading span { color:var(--muted); font:11px "DM Mono",monospace; }
+.brew-history { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.brew-entry { padding:17px 19px; border:1px solid var(--line); border-radius:13px; background:rgba(251,249,245,.7); }
+.brew-entry-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }.brew-entry h4 { font:500 21px "Playfair Display",serif; margin:3px 0 0; }.entry-date { color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font:9px "DM Mono",monospace; margin:0; }
+.dripper-chip { padding:6px 9px; border-radius:20px; color:var(--coffee); background:#efe3d5; font:10px "DM Mono",monospace; }
+.entry-meta,.entry-recipe { margin:8px 0 0; color:var(--muted); font-size:11px; }.entry-recipe { padding-top:9px; border-top:1px solid var(--line); font-family:"DM Mono",monospace; font-size:10px; line-height:1.5; }
+.entry-notes { margin:10px 0 0; color:#453930; font:italic 14px/1.5 "Playfair Display",serif; }.empty-state { grid-column:1/-1; color:var(--muted); border:1px dashed #c9beb3; border-radius:12px; padding:22px; text-align:center; font-size:13px; }
 @keyframes appear { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
-@media (max-width:720px) { .shell { width:min(100% - 32px, 520px); } .hero { padding:52px 0 37px; } .workspace { grid-template-columns:1fr; } .result-card { min-height:390px; } .eyebrow { display:none; } .result-footer { gap:12px; flex-wrap:wrap; } }
+@media (max-width:720px) { .shell { width:min(100% - 32px, 520px); } .hero { padding:52px 0 37px; } .workspace,.library-grid { grid-template-columns:1fr; } .result-card { min-height:390px; } .eyebrow { display:none; } .result-footer { gap:12px; flex-wrap:wrap; } .coffee-library { margin-top:55px; } .library-heading { align-items:flex-start; gap:15px; flex-direction:column; } .coffee-card,.brew-card { padding:19px; } }
+@media (max-width:440px) { .brew-fields { grid-template-columns:1fr 1fr; }.brew-fields label:last-child { grid-column:1/-1; }.brew-history { grid-template-columns:1fr; }.coffee-fields { gap:10px; } }
