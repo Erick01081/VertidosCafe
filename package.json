@@ -2,8 +2,30 @@
   "name": "cafe-filtrado",
   "version": "1.0.0",
   "private": true,
-  "scripts": {"dev":"next dev","build":"next build","start":"next start","lint":"eslint src","test":"tsc --target ES2022 --module commonjs --moduleResolution node --outDir .test-dist --rootDir src/lib src/lib/types.ts src/lib/label-parser.ts && node --test scripts/*.test.mjs"},
-  "dependencies": {"@supabase/supabase-js":"^2.57.0","lucide-react":"^0.468.0","next":"^15.5.3","react":"^19.1.1","react-dom":"^19.1.1","react-easy-crop":"^5.5.3","tesseract.js":"^6.0.1"},
-  "devDependencies": {"@types/node":"^22.18.6","@types/react":"^19.1.13","@types/react-dom":"^19.1.9","typescript":"^5.9.2","eslint":"^9.35.0","eslint-config-next":"^15.5.3"},
-  "overrides": {"postcss":"^8.5.23"}
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src",
+    "test": "tsc --target ES2022 --module commonjs --moduleResolution node --outDir .test-dist --rootDir src/lib src/lib/types.ts src/lib/label-parser.ts src/lib/supabase-url.ts && node --test scripts/*.test.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "lucide-react": "^0.468.0",
+    "next": "^15.5.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-easy-crop": "^5.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.6",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "^15.5.3",
+    "typescript": "^5.9.2"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
+  }
 }

@@ -2,6 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialRecipe, makeRecipe } from '../.test-dist/types.js';
 import { proposeLabelData } from '../.test-dist/label-parser.js';
+import { normalizeSupabaseUrl } from '../.test-dist/supabase-url.js';
+
+test('normalizes Supabase project URLs copied from the REST endpoint', () => {
+  assert.equal(normalizeSupabaseUrl('https://demo.supabase.co/rest/v1/'), 'https://demo.supabase.co');
+  assert.equal(normalizeSupabaseUrl('https://demo.supabase.co/'), 'https://demo.supabase.co');
+  assert.equal(normalizeSupabaseUrl(undefined), undefined);
+});
 
 test('calculates bloom and cumulative pour weights from coffee, ratio and pour count', () => {
   assert.deepEqual(makeRecipe(15, 16, 3, 3), {

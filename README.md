@@ -1,6 +1,6 @@
 # Cafetal — diario de café filtrado
 
-Aplicación web en español para guardar cafés, leer empaques con OCR local, calcular recetas de vertido y registrar preparaciones. Está configurada como un espacio personal sin cuentas ni contraseña.
+Aplicación web en español para guardar cafés, leer empaques con OCR.space, calcular recetas de vertido y registrar preparaciones. Está configurada como un espacio personal sin cuentas ni contraseña.
 
 ## Requisitos
 
@@ -11,11 +11,13 @@ Aplicación web en español para guardar cafés, leer empaques con OCR local, ca
 
 1. En el dashboard de Supabase, abre **SQL Editor**, pega y ejecuta el contenido de [`supabase/schema.sql`](supabase/schema.sql). Crea las tablas `coffees`, `brews`, el bucket `coffee-photos` y políticas RLS de acceso anónimo.
 2. En **Project Settings → API**, copia la Project URL y la clave pública `anon`/publishable. Nunca pongas una `service_role` en variables `NEXT_PUBLIC_*`.
+   En Vercel, `NEXT_PUBLIC_SUPABASE_URL` debe ser la Project URL base, sin `/rest/v1/`. La app elimina ese sufijo si se pega por error.
 3. Copia `.env.example` a `.env.local` y rellena:
 
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-clave-publica
+   OCR_SPACE_API_KEY=tu-clave-de-ocr-space
    ```
 
 No hace falta configurar Authentication ni crear una cuenta.
@@ -37,13 +39,13 @@ Abre [http://localhost:3000](http://localhost:3000). Para compilar: `npm run bui
 
 ## Vercel
 
-Importa este repositorio en Vercel y configura `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`. No requiere servidor OCR, API de pago ni clave secreta. La app y los registros quedarán abiertos como se explica arriba.
+Importa este repositorio en Vercel y configura `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` y `OCR_SPACE_API_KEY` en **Settings → Environment Variables**. La clave de OCR.space se usa únicamente en el servidor; no la agregues a una variable `NEXT_PUBLIC_*`. Después de cambiar variables, vuelve a desplegar. El reconocimiento requiere conexión a internet.
 
 El diseño evita servicios OCR de pago y puede empezar en planes gratuitos: Supabase Free incluye cuotas limitadas (entre ellas 500 MB de base de datos, 1 GB de archivos y 50.000 usuarios activos mensuales) y puede pausar proyectos inactivos durante una semana. Vercel Hobby es gratis para uso personal/no comercial y limita el uso mensual. Consulta [cuotas actuales de Supabase](https://supabase.com/docs/guides/platform/billing-on-supabase) y [condiciones actuales de Vercel Hobby](https://vercel.com/docs/plans/hobby): los planes y topes pueden cambiar. Fotos grandes o muchos usuarios pueden superar los topes; limita las imágenes al formato JPEG optimizado que usa la app y vigila el uso en ambos paneles.
 
 ## Reconocimiento de etiquetas
 
-Tesseract.js ejecuta OCR en el navegador con modelos español e inglés. El primer uso descarga los modelos; esto puede tardar y depende de la conexión y del dispositivo. La app no envía la imagen a un proveedor OCR. La rotación y el recorte ayudan con etiquetas inclinadas, pero el motor puede fallar con reflejos, desenfoque, tipografías decorativas, poco contraste o texto pequeño. La detección de campos es una propuesta heurística y no comprende perfectamente diseños desconocidos: inspecciona cada campo, corrígelo y guarda solo cuando estés conforme. Los campos no reconocidos quedan vacíos; el OCR no usa una lista de tus cafés de ejemplo para inventar resultados.
+La app envía a OCR.space la imagen recortada y optimizada en escala de grises mediante una ruta de servidor; la clave no llega al navegador. La integración usa el motor 3 y español. En el plan gratuito, las imágenes admiten hasta 1 MB (la app las limita a 900 KB); OCR.space aplica cuotas gratuitas que pueden cambiar y puede tardar más que el OCR local. Consulta [documentación y límites de OCR.space](https://ocr.space/ocrapi). Las fotos enviadas a OCR.space se procesan fuera de tu proyecto Supabase. La rotación y el recorte ayudan con etiquetas inclinadas, aunque reflejos, desenfoque, tipografías decorativas, poco contraste y texto pequeño todavía pueden confundirlo. La asignación de campos es heurística: inspecciona y corrige cada propuesta antes de guardar. Los campos no reconocidos quedan vacíos; el OCR no usa una lista de cafés de ejemplo para inventar resultados.
 
 ## Datos y privacidad
 
@@ -54,7 +56,7 @@ Los registros viven en PostgreSQL de tu proyecto Supabase y las imágenes en el 
 - Acceso directo sin registro ni inicio de sesión.
 - Catálogo con búsqueda y fichas individuales.
 - Añadir, editar y borrar cafés y preparaciones (con confirmación al borrar).
-- OCR local en español/inglés, propuestas de campos editables, recorte, zoom, giro de 90° y giro fino.
+- OCR.space en español, propuestas de campos editables, recorte, zoom, giro de 90° y giro fino.
 - Calculadora con gramos, ratio, bloom 1:2/1:3/1:4, 1–12 vertidos después del bloom y peso acumulado.
 - Receta copiada en cada preparación para que los cambios posteriores no alteren el historial.
 - Repetir una preparación como base, editar resultados y registrar dripper, molienda, temperatura, tiempo y notas.
